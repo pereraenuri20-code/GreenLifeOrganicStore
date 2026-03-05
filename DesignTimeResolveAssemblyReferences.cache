@@ -1,0 +1,114 @@
+﻿using GreenLifeOrganicStore.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace GreenLifeOrganicStore
+{
+    public partial class ProductManagementForm : Form
+    {
+        List<Product> Products = new List<Product>();
+        int ProducttdCounter = 1;
+        public ProductManagementForm()
+        {
+            InitializeComponent();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Product product = new Product
+                {
+                    ProductID = ProducttdCounter++,
+                    Name = txtProductName.Text,
+                    Category = txtCategory.Text,
+                    Price = decimal.Parse(txtPrice.Text),
+                    Stock = int.Parse(txtStock.Text),
+                    Suppliar = txtSuppliar.Text,
+                };
+
+                Products.Add(product);
+                RefreshGrid();
+                ClearField();
+
+                MessageBox.Show("Product added successfully");
+            }
+            catch
+            {
+                MessageBox.Show("Please enter valid data");
+            }
+        }
+        private void RefreshGrid()
+        {
+            dgvProducts.DataSource = null;
+            dgvProducts.DataSource = Products;
+        }
+
+        private void ClearField()
+        {
+            txtProductName.Clear();
+            txtCategory.Clear();
+            txtPrice.Clear();
+            txtStock.Clear();
+            txtSuppliar.Clear();
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            if (dgvProducts.CurrentRow != null)
+            {
+                int id = (int)dgvProducts.CurrentRow.Cells[0].Value;
+                Product product = Products.Find(p => p.ProductID == id);
+
+                product.Name = txtProductName.Text;
+                product.Category = txtCategory.Text;
+                product.Price = decimal.Parse(txtPrice.Text);
+                product.Stock = int.Parse(txtStock.Text);
+                product.Suppliar = txtSuppliar.Text;
+
+                RefreshGrid();
+                ClearField();
+
+
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (dgvProducts.CurrentRow !=null)
+            {
+                int id = (int)dgvProducts.CurrentRow.Cells[0].Value;
+                Product product = Products.Find(p => p.ProductID == id);
+
+                Products.Remove(product);
+                RefreshGrid();
+                ClearField();
+
+            }
+        }
+
+        private void dgvProducts_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dgvProducts.CurrentRow!=null)
+            {
+                txtProductName.Text = dgvProducts.CurrentRow.Cells[1].Value.ToString();
+                txtCategory.Text = dgvProducts.CurrentRow.Cells[2].Value.ToString();
+                txtPrice.Text = dgvProducts.CurrentRow.Cells[3].Value.ToString();
+                txtStock.Text = dgvProducts.CurrentRow.Cells[4].Value.ToString();
+                txtSuppliar.Text = dgvProducts.CurrentRow.Cells[5].Value.ToString();
+            }
+        }
+    }
+}
